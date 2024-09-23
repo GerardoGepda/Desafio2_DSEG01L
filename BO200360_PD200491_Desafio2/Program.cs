@@ -1,4 +1,7 @@
 
+using BO200360_PD200491_Desafio2.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace BO200360_PD200491_Desafio2
 {
     public class Program
@@ -10,6 +13,10 @@ namespace BO200360_PD200491_Desafio2
             // Add services to the container.
 
             builder.Services.AddControllers();
+            // Añadir la configuración de la cadena de conexión para el DbContext
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
