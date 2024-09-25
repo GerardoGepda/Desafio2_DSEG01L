@@ -37,6 +37,5 @@ namespace BO200360_PD200491_Desafio2.Models
         [ForeignKey("Candidato")]
         public int CandidatoId { get; set; }
 
-        public Candidato Candidato { get; set; }
     }
 }

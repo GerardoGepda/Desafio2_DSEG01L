@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - SA_PASSWORD=MyP@ssw0rd123
+      - ACCEPT_EULA=Y
+    ports:
+      - "1435:1433"
+    networks:
+      - mynetwork
+
+  webapp:
+    image: udb/desafio2:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=Desafio2DSE;User Id=sa;Password=MyP@ssw0rd123;TrustServerCertificate=True;
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

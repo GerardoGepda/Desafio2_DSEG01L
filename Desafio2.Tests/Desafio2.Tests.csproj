@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BO200360_PD200491_Desafio2\BO200360_PD200491_Desafio2.csproj" />
+  </ItemGroup>
+
 </Project>
