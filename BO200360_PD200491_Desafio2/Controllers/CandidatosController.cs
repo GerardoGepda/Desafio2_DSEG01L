@@ -6,18 +6,26 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BO200360_PD200491_Desafio2.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BO200360_PD200491_Desafio2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CandidatosController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public CandidatosController(AppDbContext context)
+        public CandidatosController(AppDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _context = context;
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         // GET: api/Candidatos
@@ -74,20 +82,38 @@ namespace BO200360_PD200491_Desafio2.Controllers
 
         // POST: api/Candidatos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<Candidato>> PostCandidato(Candidato candidato)
         {
-            // Generando código único para el candidato
-            var codigoUnico = GenerarCodigoUnico(candidato.Apellidos);
-            candidato.Codigo = codigoUnico;
+            // crear usuario en Identity
+            var user = new IdentityUser
+            {
+                UserName = candidato.Email,
+                Email = candidato.Email
+            };
+            var result = await _userManager.CreateAsync(user, candidato.Contrasena);
 
-            // Hashing de la contraseña
-            candidato.Contrasena = BCrypt.Net.BCrypt.HashPassword(candidato.Contrasena);
+            if (result.Succeeded)
+            {
+                // Generando código único para el candidato
+                var codigoUnico = GenerarCodigoUnico(candidato.Apellidos);
+                candidato.Codigo = codigoUnico;
+                candidato.IdUser = user.Id;
 
-            _context.Candidatos.Add(candidato);
-            await _context.SaveChangesAsync();
+                // Hashing de la contraseña
+                candidato.Contrasena = BCrypt.Net.BCrypt.HashPassword(candidato.Contrasena);
 
-            return CreatedAtAction("GetCandidato", new { id = candidato.Id }, candidato);
+                _context.Candidatos.Add(candidato);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetCandidato", new { id = candidato.Id }, candidato);
+            }
+            else
+            {
+                // Manejar los errores
+                return BadRequest(result.Errors);
+            }
         }
 
         // DELETE: api/Candidatos/5

@@ -1,6 +1,9 @@
 ﻿using BO200360_PD200491_Desafio2.Controllers;
 using BO200360_PD200491_Desafio2.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +20,18 @@ namespace Desafio2.Tests
         {
             // Arrange
             var context = Setup.GetInMemoryDatabaseContext();
-            var controller = new CandidatosController(context);
+
+            // Crear un UserManager<IdentityUser> falso usando Moq
+            var userStoreMock = new Mock<IUserStore<IdentityUser>>();
+
+            var userManagerMock = new Mock<UserManager<IdentityUser>>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null
+            );
+
+            // Crear una configuración simulada
+            var configMock = new Mock<IConfiguration>();
+
+            var controller = new CandidatosController(context, userManagerMock.Object, configMock.Object);
             var candidato = new Candidato
             {
                 Nombre = "John",
@@ -42,7 +56,19 @@ namespace Desafio2.Tests
         {
             // Arrange
             var context = Setup.GetInMemoryDatabaseContext();
-            var controller = new CandidatosController(context);
+
+            // Crear un UserManager<IdentityUser> falso usando Moq
+            var userStoreMock = new Mock<IUserStore<IdentityUser>>();
+
+            var userManagerMock = new Mock<UserManager<IdentityUser>>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null
+            );
+
+            // Crear una configuración simulada
+            var configMock = new Mock<IConfiguration>();
+
+            var controller = new CandidatosController(context, userManagerMock.Object, configMock.Object);
+
             var candidato = new Candidato
             {
                 Nombre = "John",
@@ -72,7 +98,19 @@ namespace Desafio2.Tests
         {
             // Arrange
             var context = Setup.GetInMemoryDatabaseContext();
-            var controller = new CandidatosController(context);
+
+            // Crear un UserManager<IdentityUser> falso usando Moq
+            var userStoreMock = new Mock<IUserStore<IdentityUser>>();
+
+            var userManagerMock = new Mock<UserManager<IdentityUser>>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null
+            );
+
+            // Crear una configuración simulada
+            var configMock = new Mock<IConfiguration>();
+
+            var controller = new CandidatosController(context, userManagerMock.Object, configMock.Object);
+
             var plainTextPassword = "password123";
             var candidato = new Candidato
             {

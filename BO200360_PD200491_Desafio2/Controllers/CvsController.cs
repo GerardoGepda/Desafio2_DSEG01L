@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BO200360_PD200491_Desafio2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BO200360_PD200491_Desafio2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CvsController : ControllerBase
     {
         private readonly AppDbContext _context;

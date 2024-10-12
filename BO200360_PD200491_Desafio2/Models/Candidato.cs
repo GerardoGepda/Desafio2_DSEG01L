@@ -39,6 +39,9 @@ namespace BO200360_PD200491_Desafio2.Models
         [MinLength(8)]
         public string Contrasena { get; set; } = string.Empty;
 
+        [MaxLength(450)]
+        public string IdUser { get; set; } = string.Empty;
+
         // Relación uno a muchos: Un candidato puede tener muchas hojas de vida
         public ICollection<Cv> Cvs { get; set; } = new List<Cv>();
     }
